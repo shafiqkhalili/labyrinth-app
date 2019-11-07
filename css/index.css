@@ -1,0 +1,109 @@
+html,
+body {
+    padding: 0;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+    background-color: #5BB391;
+}
+/* Create 10X10 Maze */
+.grid {
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: repeat(10, minmax(50px, 50px));
+    grid-template-rows: repeat(10, minmax(50px, 50px));
+    ;
+    grid-gap: 0;
+}
+/* Maze cell */
+.grid-item {
+    /* height: 60px;
+    width: 60px; */
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid red;
+}
+/* Remove borders */
+.no-top {
+    border-top: none;
+}
+
+.no-right {
+    border-right: none;
+}
+
+.no-left {
+    border-left: none;
+}
+
+.no-bottom {
+    border-bottom: none;
+}
+.ghosts_position{
+    height: 40px;
+    width: 40px;
+    border: 2px solid red;
+    border-radius: 50%;
+}
+/* Maze players shape */
+.player_position{
+    height: 40px;
+    width: 40px;
+    border: 2px solid yellow;
+    border-radius: 50%;
+}
+#finish_position{
+    height: 40px;
+    width: 40px;
+    background-color: yellow;
+    border: 2px solid yellow;
+    border-radius: 50%;
+}
+/* Maze wrapper */
+.grid-container {
+    margin: 0 auto;
+    padding: 0;
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background: #2A664F;
+    justify-content: center;
+    align-items: center;
+}
+/* Game Navigation section */
+.maze_navigation {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 100px));
+    grid-template-rows: repeat(3, minmax(100px, 100px));
+    ;
+    grid-gap: 0;
+    justify-content: center;
+}
+.navigation_buttons{
+    font-size: 100px;
+    text-align: center;
+    margin: auto;
+}
+.navigation_buttons a{
+    text-decoration: none;
+    color: #5BB391;
+}
+/* Old CSS */
+#startMazeBtn {
+    height: 150px;
+}
+
+.difficulty-range {
+    border: 1px solid red;
+}
+
+.menu {
+    display: grid;
+    align-items: flex-start;
+}

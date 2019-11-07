@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="css/index.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main class="main">
+      <div class="grid">
+        <!--
+        <div class="grid-item">
+          <div class="difficulty-range">
+            <label for="diffInput">Difficulty</label>
+            <input
+              type="range"
+              list="diffSelect"
+              min="10"
+              max="40"
+              step="5"
+              value="10"
+              id="diffInput"
+            />
+            <datalist id="diffSelect">
+              <option value="10" label="Easy" selected></option>
+              <option value="20" label="Medium"></option>
+              <option value="30" label="Hard"></option>
+              <option value="40" label="Expert"></option>
+            </datalist>
+          </div>
+        </div>
+        <div class="grid-item">
+          <input
+            id="startMazeBtn"
+            type="button"
+            onclick="makeMaze()"
+            value="Start"
+          />
+        </div>-->
+        <div class="grid-item">
+            <div id="menu">
+                <div class="custom-select">
+                  <select id="diffSelect">
+                            <option value="10">Easy</option>
+                            <option value="15">Medium</option>
+                            <option value="25">Hard</option>
+                            <option value="38">Extreme</option>                                      
+                        </select>
+                </div>
+                <input id="startMazeBtn" type="button" onclick="makeMaze()" value="Start" />
+              </div>
+        </div>
+        <div class="grid-item">
+            <div id="view">
+                <div id="mazeContainer">
+                  <canvas id="mazeCanvas" class="border" height="400" width="400"></canvas>
+                </div>
+              </div>
+        </div>
+      </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min.js"></script>
+    <script src="js/makeMaze.js"></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>
