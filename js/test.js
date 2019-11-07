@@ -1,3 +1,40 @@
+document.addEventListener("keydown", function (event) {
+    let key_dir = '';
+    switch (event.keyCode) {
+        //Left
+        case 65:
+            key_dir = "L";
+            break;
+        case 87:
+            key_dir = "T";
+            break;
+        case 68:
+            key_dir = "R";
+            break;
+        case 83:
+            key_dir = "B";
+            break;
+    }
+    move_player(key_dir);
+    event.preventDefault();
+})
+var ghosts = new Array();
+var timer1 = '';
+ghosts['coordinates'] = [];
+ghosts['speed'] = 0.5;
+ghosts['location_in_array'] = 0;
+
+ghosts['prev_dir'] = 'forware';
+ghosts['prev_xy'] = '';
+ghosts['try_nr'] = 0;
+// ghosts[1]['position']['init'] = [9, 2];
+// ghosts[1]['position']['current'] = [9, 2];
+// ghosts[1]['speed'] = 2;
+// ghosts[2]['position']['init'] = [6, 4];
+// ghosts[2]['position']['current'] = [6, 4];
+// ghosts[2]['speed'] = 3;
+var player_position = [0, 0];
+
 function make_maze() {
 
     let outDev = document.getElementById('maze-container');
@@ -28,7 +65,7 @@ function make_maze() {
                     maze_border += ' ' + 'no-bottom';
                 }
                 if (array_map[y][x].includes('G')) {
-                    ghosts['position'] = [x, y];
+                    ghosts['coordinates'].push([x, y]);
                 }
                 //Check if is maze start
                 if (array_map[y][x].includes('S')) {
@@ -58,7 +95,6 @@ function make_maze() {
 }
 function move_player(direction) {
     console.log('direction:' + direction);
-    let player_elem = document.getElementById('player_position');
 
     // let current_position = position_data.split('-').map(octet => parseInt(octet));
     let x = parseInt(player_position[0]);
@@ -98,6 +134,7 @@ function move_player(direction) {
         current_grid.innerHTML = '';
         if (array_map[y][x].includes('F')) {
             current_grid.innerHTML = '';
+            clearInterval(timer1);
             alert('Game finished');
         }
         else {
@@ -112,16 +149,68 @@ function move_player(direction) {
     }
     console.log(' position:' + player_position);
 }
-function make_ghosts() {
-    setInterval(() => {
-        let x = parseInt(ghosts['position'][0]);
-        let y = parseInt(ghosts['position'][1]);
-        let direction_arr = ['L', 'T', 'R', 'B'];
+var make_ghosts = function make_ghosts() {
+    let ghost_direction = 'forward';
+    timer1 = setInterval(() => {
+        //Current position of ghost in Position's array
+        let ghost_pos = ghosts['location_in_array'];
+        const ghost_array_length = ghosts['coordinates'].length-1;
+        //X , Y value based on location
+        let ghost_xy_coordinate = ghosts['coordinates'][ghost_pos];
+        const current_x = parseInt(ghost_xy_coordinate[0]);
+        const current_y = parseInt(ghost_xy_coordinate[1]);
+        let next_x = next_y = 0;
+        const player_x = parseInt(player_position[0]);
+        const player_y = parseInt(player_position[1]);
+        if (current_x === player_x && current_y === player_y) {
+            alert('You lost');
+            clearInterval(timer1);
+           
+        }
+        //Check if in array range
+        if (ghost_direction === 'forward') {
+            if (ghost_pos < ghost_array_length-1) {
+                ghost_pos++;
+            }
+            else{
+                ghost_direction = 'backward';
+            }
+        }
+        //To move zombie in other direction
+        else {
+            if (ghost_pos > 0) {
+                ghost_pos--;
+            }
+            else{
+                ghost_direction = 'forward';
+            }
+            ghosts['location_in_array'] = ghost_pos;
+        }
+        ghost_xy_coordinate = ghosts['coordinates'][ghost_pos];
+        next_x = parseInt(ghost_xy_coordinate[0]);
+        next_y = parseInt(ghost_xy_coordinate[1]);
+        ghosts['location_in_array'] = ghost_pos;
+        //Find current position of ghost in maze
+        let current_grid = document.getElementById(current_x + '-' + current_y);
+        current_grid.innerHTML = '';
+        let ghost_div = document.createElement('div');
+        ghost_div.setAttribute('class', 'ghosts_position');
+        ghost_div.setAttribute('id', 'ghosts_position');
+
+        //Create new ghost position
+
+        let new_grid = document.getElementById(next_x+ '-' + next_y);
+        new_grid.appendChild(ghost_div);
+        // ghosts['try_nr']++;
+        // ghosts['position'] = [x, y];
+        // let direction_arr = ['L', 'T', 'R', 'B'];
+        /*
         let dir_found = true;
         do {
             let random_dir = direction_arr[Math.floor(Math.random() * direction_arr.length)];
             let prev_dir = ghosts['prev_dir'];
             let oposit_dir = '';
+            //Find next direction in array
             if (prev_dir != '') {
                 switch (prev_dir) {
                     case 'L':
@@ -144,7 +233,7 @@ function make_ghosts() {
                     prev_dir = ghosts['prev_move'];
                 }
             }
-               
+
             switch (prev_dir) {
                 case 'L':
                     //If x position is not out of array boundary
@@ -182,38 +271,14 @@ function make_ghosts() {
             }
             let new_position = [x, y];
         } while (dir_found);
-        //Find current position of ghost in maze
-        let current_grid = document.getElementById(ghosts['position'][0] + '-' + ghosts['position'][1]);
-        current_grid.innerHTML = '';
-        let ghost_div = document.createElement('div');
-        ghost_div.setAttribute('class', 'ghosts_position');
-        ghost_div.setAttribute('id', 'ghosts_position');
+        */
 
-        //Create new ghost position
-
-        let new_grid = document.getElementById(x + '-' + y);
-        new_grid.appendChild(ghost_div);
-        ghosts['try_nr']++;
-        ghosts['position'] = [x, y];
     }, 300 / ghosts['speed']);
 }
-var ghosts = new Array();
 
-ghosts['position'] = [0, 0];
-ghosts['speed'] = 1;
-ghosts['prev_dir'] = '';
-ghosts['prev_xy'] = '';
-ghosts['try_nr'] = 0;
-// ghosts[1]['position']['init'] = [9, 2];
-// ghosts[1]['position']['current'] = [9, 2];
-// ghosts[1]['speed'] = 2;
-// ghosts[2]['position']['init'] = [6, 4];
-// ghosts[2]['position']['current'] = [6, 4];
-// ghosts[2]['speed'] = 3;
-var player_position = [0, 0];
 var array_map = [
     ['LTB', 'TR', 'LT', 'TR', 'SLB', 'TB', 'TR', 'LT', 'TB', 'TR'],
-    ['LT', 'B', 'RB', 'LR', 'LT', 'TB', 'RB', 'LR', 'LT', 'BR'],
+    ['LTG', 'B', 'RB', 'LR', 'LT', 'TB', 'RB', 'LR', 'LT', 'BR'],
     ['LG', 'TBG', 'TRG', 'LR', 'LB', 'T', 'TB', 'BR', 'LB', 'TRB'],
     ['LR', 'LT', 'RG', 'LB', 'TR', 'LB', 'TR', 'LT', 'TB', 'TR'],
     ['LR', 'LR', 'LBG', 'TRG', 'LB', 'TB', 'RB', 'LRB', 'LT', 'RB'],
