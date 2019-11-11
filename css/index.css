@@ -46,24 +46,30 @@ body {
     border-bottom: none;
 }
 .ghosts_position{
-    height: 40px;
-    width: 40px;
-    border: 2px solid red;
-    border-radius: 50%;
+    font-size: 1.8em;
+    /* height: 50px;
+    width: 40px; */
+    /* border: 2px solid red;
+    border-radius: 50%; */
 }
 /* Maze players shape */
 .player_position{
-    height: 40px;
+    font-size: 1.8em;
+    /* height: 40px;
     width: 40px;
     border: 2px solid yellow;
-    border-radius: 50%;
+    border-radius: 50%; */
+}
+.player_position .dir_left{
+    transform: scale(-1,1);;
 }
 #finish_position{
-    height: 40px;
+    font-size: 1.8em;
+    /* height: 40px;
     width: 40px;
     background-color: yellow;
     border: 2px solid yellow;
-    border-radius: 50%;
+    border-radius: 50%; */
 }
 /* Maze wrapper */
 .grid-container {
