@@ -36,6 +36,10 @@ function continue_game_func() {
 }
 //On clicking new game button
 function new_game_func(map_nr) {
+  if (timer !== '' && timer.pause() !== 'undefined') {
+    reset();
+  }
+
   game_buttons.style.display = "none";
   // game_level.style.display = "none";
   play_maze.style.display = "grid"
@@ -81,7 +85,10 @@ function game_level_func() {
 function reset(){
   clearInterval(ghostH);
   clearInterval(ghostG);
-  timer.stop();
+  if (timer !== '') {
+    timer.stop();
+  }
+  
   remained_lives = 3;
 }
 // [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [2, 4], [3, 4]
