@@ -82,6 +82,7 @@ function reset(){
   clearInterval(ghostH);
   clearInterval(ghostG);
   timer.stop();
+  remained_lives = 3;
 }
 // [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [2, 4], [3, 4]
 // [4, 2], [5, 2], [6, 2], [7, 2]
@@ -103,7 +104,7 @@ var timer = "";
 ghosts_timer = [];
 var ghostH = "";
 var ghostG = "";
-
+var remained_lives = 3;
 function pad(val) {
   var valString = val + "";
   if (valString.length < 2) {
@@ -137,7 +138,7 @@ var maze_timer = function (callback, delay) {
   };
   this.resume();
 };
-
+var init_position = [];
 var player_position = [0, 0];
 
 function make_maze() {
@@ -185,6 +186,10 @@ function make_maze() {
             // player_div.setAttribute('data-position',x+'-'+y);
             rowNode.appendChild(player_div);
             player_position = [x, y];
+            if (init_position.length === 0) {
+              init_position = [x,y];
+            }
+
           }
           //Check if maze ends
           if (array_map[y][x].includes("F")) {
@@ -292,10 +297,40 @@ function make_ghosts(ghost) {
   const player_x = parseInt(player_position[0]);
   const player_y = parseInt(player_position[1]);
   if (current_x === player_x && current_y === player_y) {
-    alert("You lost");
-    reset();
-    player_position = [0, 0];
-    make_maze();
+    if (remained_lives < 1) {
+      alert("You lost!");
+      reset();
+      player_position = [0, 0];
+      make_maze();
+    }
+    else{      
+      timer.pause();
+      remained_lives--;
+      if(confirm("You have "+remained_lives+" chances! Click OK to continue?")){
+        let current_grid = document.getElementById(
+          player_position[0] + "-" + player_position[1]
+        );
+        current_grid.innerHTML = "";
+        let new_grid = document.getElementById(
+          init_position[0] + "-" + init_position[1]
+        );
+        let player_div = document.createElement("div");
+        player_div.innerHTML = "&#128378;";
+        player_div.setAttribute("class", "player_position");
+        
+        player_div.setAttribute("id", "player_position");
+        // player_div.setAttribute('data-position',x+'-'+y);
+        new_grid.appendChild(player_div);
+        player_position = init_position;
+        timer.resume();
+      }
+      else{
+        alert("You quit");
+        reset();
+        player_position = [0, 0];
+        make_maze();
+      }
+    }
   }
   //Check if in array range
   if (ghost["ghost_direction"] === "forward") {
