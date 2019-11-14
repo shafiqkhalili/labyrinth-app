@@ -19,10 +19,7 @@ document.addEventListener("keydown", function (event) {
   move_player(key_dir);
   event.preventDefault();
 });
-function continue_game() {
-  first_page.style.display = "none";
-  let second_page = document.getElementById("second-page");
-  second_page.style.display = "block";
+//Page elements to show and hide on click event
 //New gamye / continue buttons
 var game_buttons = document.getElementById("new-game");
 //Maze section
