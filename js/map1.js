@@ -1,4 +1,5 @@
-var array_map = [
+var array_map = [];
+array_map = [
     ["LTB", "TR", "LT", "TR", "SLB", "TB", "TR", "LT", "TB", "TR"],
     ["LTRG", "LB", "RB", "LR", "LT", "TB", "RB", "LR", "LT", "BR"],
     ["LG", "TBG", "TRG", "LR", "LBH", "TH", "TBH", "BRH", "LB", "TRB"],

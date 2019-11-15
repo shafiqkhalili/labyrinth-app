@@ -34,34 +34,40 @@ function continue_game_func() {
   play_maze.style.display = "grid"
   timer.resume();
 }
+let nr_try = 1;
 //On clicking new game button
 function new_game_func(map_nr) {
   if (timer !== '' && timer.pause() !== 'undefined') {
     reset();
   }
-
   game_buttons.style.display = "none";
   // game_level.style.display = "none";
   play_maze.style.display = "grid"
   let outDev = document.getElementById("maze-container");
   outDev.innerHTML = "";
-  
+
   var script_div = document.getElementById('scriptLinkPlaceholder');
   var oldScript = document.getElementById("scriptLink").src;
   script_div.innerHTML = "";
   let newScript = document.createElement("script");
   newScript.src = "js/map" + map_nr + ".js";
-  newScript.onload = function(){
-    array_map = array_map;
-  };
+  // newScript.onload = function(){
+  //   array_map = array_map;
+  // };
   newScript.id = "scriptLink";
   newScript.type = "text/javascript";
   newScript.onerror = function() {
     alert("Error loading " + this.src); // Error loading https://example.com/404.js
   };
   script_div.appendChild(newScript);
-  array_map = array_map;
+  array_map = eval(array_map);
   // console.log(array_map);
+  
+  if(nr_try == 1) {
+    nr_try = 0;
+    new_game_func(map_nr);    
+  }
+  
   make_maze();
 }
 function pause_game_func() {
@@ -82,13 +88,13 @@ function game_level_func() {
   // game_level.style.display = "inline"
   // game_level.closest(".gamel-level").style.display = "block";
 }
-function reset(){
+function reset() {
   clearInterval(ghostH);
   clearInterval(ghostG);
   if (timer !== '') {
     timer.stop();
   }
-  
+
   remained_lives = 3;
 }
 // [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [2, 4], [3, 4]
@@ -179,10 +185,10 @@ function make_maze() {
             maze_border += " " + "no-bottom";
           }
           if (array_map[y][x].includes('G')) {
-              ghosts.G['coordinates'].push([x, y]);
+            ghosts.G['coordinates'].push([x, y]);
           }
           if (array_map[y][x].includes('H')) {
-              ghosts.H['coordinates'].push([x, y]);
+            ghosts.H['coordinates'].push([x, y]);
           }
           //Check if is maze start
           if (array_map[y][x].includes("S")) {
@@ -194,7 +200,7 @@ function make_maze() {
             rowNode.appendChild(player_div);
             player_position = [x, y];
             if (init_position.length === 0) {
-              init_position = [x,y];
+              init_position = [x, y];
             }
 
           }
@@ -258,10 +264,10 @@ function move_player(direction) {
       player_position[0] + "-" + player_position[1]
     );
     current_grid.innerHTML = "";
+    player_position = [x, y];
     if (array_map[y][x].includes("F")) {
       current_grid.innerHTML = "";
       reset();
-      player_position = [0, 0];
       alert("Game finished");
       make_maze();
     } else {
@@ -278,7 +284,7 @@ function move_player(direction) {
       // player_div.setAttribute('data-position',x+'-'+y);
       new_grid.appendChild(player_div);
     }
-    player_position = [x, y];
+
   }
 }
 function ghost_timer() {
@@ -310,10 +316,10 @@ function make_ghosts(ghost) {
       player_position = [0, 0];
       make_maze();
     }
-    else{      
+    else {
       timer.pause();
       remained_lives--;
-      if(confirm("You have "+remained_lives+" chances! Click OK to continue?")){
+      if (confirm("You have " + remained_lives + " chances! Click OK to continue?")) {
         let current_grid = document.getElementById(
           player_position[0] + "-" + player_position[1]
         );
@@ -324,14 +330,14 @@ function make_ghosts(ghost) {
         let player_div = document.createElement("div");
         player_div.innerHTML = "&#128378;";
         player_div.setAttribute("class", "player_position");
-        
+
         player_div.setAttribute("id", "player_position");
         // player_div.setAttribute('data-position',x+'-'+y);
         new_grid.appendChild(player_div);
         player_position = init_position;
         timer.resume();
       }
-      else{
+      else {
         alert("You quit");
         reset();
         player_position = [0, 0];
