@@ -1,4 +1,4 @@
-//Add event lister to move Player iwht WASD keys
+//Add event lister to move Player with W,A,S,D keys
 document.addEventListener("keydown", function (event) {
   let key_dir = "";
   switch (event.keyCode) {
@@ -6,6 +6,7 @@ document.addEventListener("keydown", function (event) {
     case 65:
       key_dir = "L";
       break;
+      // TOP
     case 87:
       key_dir = "T";
       break;
@@ -20,7 +21,7 @@ document.addEventListener("keydown", function (event) {
   event.preventDefault();
 });
 //Page elements to show and hide on click event
-//New gamye / continue buttons
+//New game / continue buttons
 var game_buttons = document.getElementById("new-game");
 //Maze section
 var play_maze = document.getElementById("play-maze");
@@ -34,26 +35,27 @@ function continue_game_func() {
   play_maze.style.display = "grid"
   timer.resume();
 }
-let nr_try = 1;
-//On clicking new game button
+
+/**
+ * On clicking new game button, changing map
+*/
 function new_game_func(map_nr) {
+  //Reset timers
   if (timer !== '' && timer.pause() !== 'undefined') {
     reset();
   }
   game_buttons.style.display = "none";
   // game_level.style.display = "none";
   play_maze.style.display = "grid"
+  //Maze div
   let outDev = document.getElementById("maze-container");
   outDev.innerHTML = "";
-
+  //Reset maze map and get new map array form different file
   var script_div = document.getElementById('scriptLinkPlaceholder');
   var oldScript = document.getElementById("scriptLink").src;
   script_div.innerHTML = "";
   let newScript = document.createElement("script");
   newScript.src = "js/map" + map_nr + ".js";
-  // newScript.onload = function(){
-  //   array_map = array_map;
-  // };
   newScript.id = "scriptLink";
   newScript.type = "text/javascript";
   newScript.onerror = function() {
@@ -61,33 +63,39 @@ function new_game_func(map_nr) {
   };
   script_div.appendChild(newScript);
   array_map = eval(array_map);
-  // console.log(array_map);
-  
-  if(nr_try == 1) {
-    nr_try = 0;
-    new_game_func(map_nr);    
-  }
-  
+  //Redraw map
   make_maze();
 }
+/**
+ * On clicking pause button
+ */
 function pause_game_func() {
   btn_continue.style.display = "inline";
   game_buttons.style.display = "grid"
   play_maze.style.display = "none";
   timer.pause();
 }
+/**
+ * To stop game, resets all
+ */
 function stop_game_func() {
   btn_continue.style.display = "none";
   game_buttons.style.display = "grid"
   play_maze.style.display = "none";
   reset();
 }
+/**
+ * To show HTML section for game level(Not implemented)
+ */
 function game_level_func() {
   btn_continue.style.display = "none";
   game_buttons.style.display = "none";
   // game_level.style.display = "inline"
   // game_level.closest(".gamel-level").style.display = "block";
 }
+/**
+ * Reseting timers
+ */
 function reset() {
   clearInterval(ghostH);
   clearInterval(ghostG);
@@ -97,18 +105,18 @@ function reset() {
 
   remained_lives = 3;
 }
-// [0, 1], [0, 2], [1, 2], [2, 2], [2, 3], [2, 4], [3, 4]
-// [4, 2], [5, 2], [6, 2], [7, 2]
+/**
+ * Array to keep ghost relatd data
+ * Used in timers
+ */
 var ghosts = {
   H: {
     coordinates: [],
-    speed: 0.5,
     location_in_array: 0,
     ghost_direction: "forward"
   },
   G: {
     coordinates: [],
-    speed: 0.5,
     location_in_array: 0,
     ghost_direction: "forward"
   }
@@ -118,6 +126,10 @@ ghosts_timer = [];
 var ghostH = "";
 var ghostG = "";
 var remained_lives = 3;
+/**
+ * Att 0 to show correct time format
+ * @param {string} val 
+ */
 function pad(val) {
   var valString = val + "";
   if (valString.length < 2) {
@@ -126,7 +138,11 @@ function pad(val) {
     return valString;
   }
 }
-var maze_timer = function (callback, delay) {
+/**
+ * Timer to show total time in game
+ * Runs each second
+ */
+var maze_timer = function () {
   let timerId;
   let seconds = (minutes = totalSeconds = 0);
 
@@ -153,8 +169,11 @@ var maze_timer = function (callback, delay) {
 };
 var init_position = [];
 var player_position = [0, 0];
-
+/**
+ * Drawing maze map
+ */
 function make_maze() {
+  //Starting coundup timer
   timer = new maze_timer();
   ghosts.G['coordinates'] = [];
   ghosts.H['coordinates'] = [];
@@ -162,15 +181,13 @@ function make_maze() {
   let outDev = document.getElementById("maze-container");
   outDev.innerHTML = "";
   try {
-
-
     for (y = 0; y < array_map.length; y++) {
       //Loop through row's items
       for (x = 0; x < array_map[y].length; x++) {
         //Create div element
         let rowNode = document.createElement("div");
         let maze_border = "grid-item";
-        //Set div's borders
+        //Remove borders if not included in current array position
         try {
           if (!array_map[y][x].includes("L")) {
             maze_border += " " + "no-left";
@@ -184,13 +201,17 @@ function make_maze() {
           if (!array_map[y][x].includes("B")) {
             maze_border += " " + "no-bottom";
           }
+          //G stands for our first Ghost element
+          //Push ghost position to array declared in pages top
           if (array_map[y][x].includes('G')) {
             ghosts.G['coordinates'].push([x, y]);
           }
+          //H stands for the second ghost element
           if (array_map[y][x].includes('H')) {
             ghosts.H['coordinates'].push([x, y]);
           }
-          //Check if is maze start
+          //Check if current position is maze start
+          //Create player
           if (array_map[y][x].includes("S")) {
             let player_div = document.createElement("div");
             player_div.innerHTML = "&#128378;";
@@ -204,7 +225,7 @@ function make_maze() {
             }
 
           }
-          //Check if maze ends
+          //Check if current position is maze end
           if (array_map[y][x].includes("F")) {
             let finish_div = document.createElement("div");
             finish_div.innerHTML = "&#128682;";
@@ -224,23 +245,30 @@ function make_maze() {
   } catch (error) {
     console.log(error);
   }
+  //
   ghost_timer();
 }
+/**
+ * Move player/hero in four direction
+ * If not at the edge of map
+ * or if not blocked by walls
+ */
 function move_player(direction) {
-  // let current_position = position_data.split('-').map(octet => parseInt(octet));
+  //Retreiv player position saved in player_position global variable
   let x = parseInt(player_position[0]);
   let y = parseInt(player_position[1]);
+   //If x,y position is not out of array boundary 
+   //and direction has no border, move player to new direction
   switch (direction) {
     case "L":
-      //If x position is not out of array boundary
-      //If not in left side
+      //If not in left side and moving left
       if (!array_map[y][x].includes("L")) {
         x = x > 0 ? x - 1 : x;
       }
       break;
     case "T":
       if (!array_map[y][x].includes("T")) {
-        //If not in first line
+        //If not in first line and moving up
         y = y > 0 ? y - 1 : y;
       }
       break;
@@ -256,21 +284,25 @@ function move_player(direction) {
       }
       break;
   }
+  //Update position array
   let new_position = [x, y];
 
-  //If position changed
+  //If position changed, redraw player in maz map
   if (JSON.stringify(player_position) !== JSON.stringify(new_position)) {
     let current_grid = document.getElementById(
       player_position[0] + "-" + player_position[1]
     );
     current_grid.innerHTML = "";
     player_position = [x, y];
+    //If we are at maze finish line
     if (array_map[y][x].includes("F")) {
       current_grid.innerHTML = "";
-      reset();
       alert("Game finished");
+      //Reset maze
+      reset();
       make_maze();
     } else {
+      //Redraw player
       let new_grid = document.getElementById(
         new_position[0] + "-" + new_position[1]
       );
@@ -287,29 +319,38 @@ function move_player(direction) {
 
   }
 }
+/**
+ * Keep ghosts on move, using global ghosts array
+ */
 function ghost_timer() {
   ghostH = setInterval(() => {
     make_ghosts(ghosts.H);
-  }, 300 / ghosts.H["speed"]);
+  }, 1000);
   ghostG = setInterval(() => {
     make_ghosts(ghosts.G);
-  }, 300 / ghosts.G["speed"]);
+  }, 1000);
 
 }
-
+/**
+ * Redraw ghosts
+ * @param {*} ghost 
+ */
 function make_ghosts(ghost) {
   //Current position of ghost in Position's array
   let ghost_pos = ghost["location_in_array"];
   const ghost_array_length = ghost["coordinates"].length - 1;
   //X , Y value based on location
   let ghost_xy_coordinate = ghost["coordinates"][ghost_pos];
-
+  //Ghost position
   const current_x = parseInt(ghost_xy_coordinate[0]);
   const current_y = parseInt(ghost_xy_coordinate[1]);
   let next_x = (next_y = 0);
+  //Player position
   const player_x = parseInt(player_position[0]);
   const player_y = parseInt(player_position[1]);
+  //If player and ghost in same maze cell
   if (current_x === player_x && current_y === player_y) {
+    //If at leaste one lives remained
     if (remained_lives < 1) {
       alert("You lost!");
       reset();
@@ -317,6 +358,7 @@ function make_ghosts(ghost) {
       make_maze();
     }
     else {
+      //Reset player position 
       timer.pause();
       remained_lives--;
       if (confirm("You have " + remained_lives + " chances! Click OK to continue?")) {
@@ -345,7 +387,7 @@ function make_ghosts(ghost) {
       }
     }
   }
-  //Check if in array range
+  //To keep ghost moving forwar and bakward
   if (ghost["ghost_direction"] === "forward") {
     if (ghost_pos < ghost_array_length) {
       ghost_pos++;
@@ -368,10 +410,12 @@ function make_ghosts(ghost) {
     }
     ghost["location_in_array"] = ghost_pos;
   }
+  
   ghost_xy_coordinate = ghost["coordinates"][ghost_pos];
   next_x = parseInt(ghost_xy_coordinate[0]);
   next_y = parseInt(ghost_xy_coordinate[1]);
   ghost["location_in_array"] = ghost_pos;
+  console.log(next_y);
   //Find current position of ghost in maze
   let current_grid = document.getElementById(current_x + "-" + current_y);
   current_grid.innerHTML = "";
